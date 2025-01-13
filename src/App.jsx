@@ -12,8 +12,7 @@ const initProjects = [
   {
     id: 1,
     title: "Go to legit",
-    description:
-      "This is a project to reach the ultimate strength and be enlightened.",
+    description: "This is a project to reach the ultimate strength and be enlightened.",
     dueDate: "31.12.2025",
     tasks: [
       { id: 1, name: "learn everyday something new" },
@@ -23,8 +22,7 @@ const initProjects = [
   {
     id: 2,
     title: "Go to legit2",
-    description:
-      "This is a project to reach the ultimate strength and be enlightened.",
+    description: "This is a project to reach the ultimate strength and be enlightened.",
     dueDate: "31.12.2025",
     tasks: [
       { id: 1, name: "learn everyday something new" },
@@ -48,17 +46,44 @@ function App() {
     });
   }
 
+  function handleAddProject(projectData) {
+    setProjectsState((prevState) => {
+      const projectId = Math.random();
+      const newProject = {
+        ...projectData,
+        id: projectId,
+      };
+
+      return {
+        ...prevState,
+        selectedProjectId: undefined,
+        projects: [...prevState.projects, newProject],
+      };
+    });
+  }
+
+  function handleCancelProject() {
+    setProjectsState((prevState) => {
+      return {
+        ...prevState,
+        selectedProjectId: undefined,
+      };
+    });
+  }
+
+  console.log(projectsState);
+
   let content;
 
   if (projectsState.selectedProjectId === null) {
-    content = <NewProject />;
+    content = <NewProject onAdd={handleAddProject} onCancel={handleCancelProject} />;
   } else if (projectsState.selectedProjectId === undefined) {
     content = <NoProjectSelected onStartAddProject={handleStartAddProject} />;
   }
 
   return (
     <main className="h-screen my-8 flex gap-8">
-      <ProjectsSidebar onStartAddProject={handleStartAddProject} />
+      <ProjectsSidebar onStartAddProject={handleStartAddProject} projects={projectsState.projects} />
       {content}
     </main>
   );
