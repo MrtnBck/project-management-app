@@ -2,10 +2,11 @@ import { useState } from "react";
 
 import "./App.css";
 
-import Sidebar from "./components/Sidebar";
+import ProjectsSidebar from "./components/ProjectsSidebar";
 
 import NewProject from "./components/NewProject";
 import ShowProject from "./components/ShowProject";
+import NoProjectSelected from "./components/NoProjectSelected";
 
 const initProjects = [
   {
@@ -33,37 +34,41 @@ const initProjects = [
 ];
 
 function App() {
-  const [projects, setProjects] = useState(initProjects);
-  const [activeProject, setActiveProject] = useState(null);
-  const [view, setView] = useState("default"); // 'default', 'addNew', 'showProject'
+  const [projectsState, setProjectsState] = useState({
+    selectedProjectId: undefined,
+    projects: [],
+  });
 
-  function addNewProject(newProject) {
-    newProject.id = projects.length + 1;
-    setProjects((prevProjects) => [newProject, ...prevProjects]);
-    setView("default");
+  function handleStartAddProject() {
+    setProjectsState((prevState) => {
+      return {
+        ...prevState,
+        selectedProjectId: null,
+      };
+    });
   }
 
-  function selectProject(id) {
-    setActiveProject(projects.find((project) => project.id === id));
-    setView("showProject");
-  }
+  let content;
 
-  function handleAddNew() {
-    setView("addNew");
-  }
-
-  function handleCancel() {
-    setView("default");
+  if (projectsState.selectedProjectId === null) {
+    content = <NewProject />;
+  } else if (projectsState.selectedProjectId === undefined) {
+    content = <NoProjectSelected onStartAddProject={handleStartAddProject} />;
   }
 
   return (
-    <div className="w-full flex">
-      <Sidebar
-        projects={projects}
-        onSelect={selectProject}
-        onAdd={handleAddNew}
-      />
-      <div className="bg-indigo-200 w-full">
+    <main className="h-screen my-8 flex gap-8">
+      <ProjectsSidebar onStartAddProject={handleStartAddProject} />
+      {content}
+    </main>
+  );
+}
+
+export default App;
+
+/* 
+
+ <div className="bg-indigo-200 w-full">
         {view === "addNew" && (
           <NewProject onSave={addNewProject} onCancel={handleCancel} />
         )}
@@ -72,8 +77,4 @@ function App() {
           <p>Select a project or get started with a new one</p>
         )}
       </div>
-    </div>
-  );
-}
-
-export default App;
+*/
