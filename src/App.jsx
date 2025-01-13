@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 
 import "./App.css";
 
@@ -11,7 +11,8 @@ const initProjects = [
   {
     id: 1,
     title: "Go to legit",
-    description: "This is a project to reach the ultimate strength and be enlightend.",
+    description:
+      "This is a project to reach the ultimate strength and be enlightened.",
     dueDate: "31.12.2025",
     tasks: [
       { id: 1, name: "learn everyday something new" },
@@ -21,7 +22,8 @@ const initProjects = [
   {
     id: 2,
     title: "Go to legit2",
-    description: "This is a project to reach the ultimate strength and be enlightend.",
+    description:
+      "This is a project to reach the ultimate strength and be enlightened.",
     dueDate: "31.12.2025",
     tasks: [
       { id: 1, name: "learn everyday something new" },
@@ -32,37 +34,43 @@ const initProjects = [
 
 function App() {
   const [projects, setProjects] = useState(initProjects);
-  const [activeProject, setActiveProject] = useState({});
-  /*   const [isAddNewProject, setIsAddNewProject] = useState(false);
-  const [isShowProject, setIsShowProject] = useState(false); */
+  const [activeProject, setActiveProject] = useState(null);
+  const [view, setView] = useState("default"); // 'default', 'addNew', 'showProject'
 
   function addNewProject(newProject) {
     newProject.id = projects.length + 1;
-
     setProjects((prevProjects) => [newProject, ...prevProjects]);
+    setView("default");
   }
 
   function selectProject(id) {
     setActiveProject(projects.find((project) => project.id === id));
+    setView("showProject");
   }
 
-  function handleIsAddNewProject(boolean) {
-    setIsAddNewProject(boolean);
+  function handleAddNew() {
+    setView("addNew");
   }
 
-  /*   useEffect(() => {
-    if (isAddNewProject) {
-      setIsShowProject(false);
-    }
-  }, [isAddNewProject]); */
+  function handleCancel() {
+    setView("default");
+  }
 
   return (
     <div className="w-full flex">
-      <Sidebar projects={projects} onSelect={selectProject} onAdd={handleIsAddNewProject} />
+      <Sidebar
+        projects={projects}
+        onSelect={selectProject}
+        onAdd={handleAddNew}
+      />
       <div className="bg-indigo-200 w-full">
-        {/* <NewProject onSave={addNewProject} onCancel={handleIsAddNewProject} /> */}
-        <ShowProject project={activeProject} />
-        {/* <p>Select a project or get started with a new one</p> */}
+        {view === "addNew" && (
+          <NewProject onSave={addNewProject} onCancel={handleCancel} />
+        )}
+        {view === "showProject" && <ShowProject project={activeProject} />}
+        {view === "default" && (
+          <p>Select a project or get started with a new one</p>
+        )}
       </div>
     </div>
   );
