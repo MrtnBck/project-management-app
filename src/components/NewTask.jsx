@@ -1,13 +1,13 @@
 import { useState } from "react";
 
-export default function NewTask() {
+export default function NewTask({ onAdd }) {
   const [enteredTask, setEnteredTask] = useState("");
 
   function handleClick() {
     if (enteredTask.trim() === "") {
       return;
     }
-
+    onAdd(enteredTask);
     setEnteredTask("");
   }
 
@@ -23,7 +23,9 @@ export default function NewTask() {
         onChange={handleChange}
         value={enteredTask}
       />
-      <button className="text-stone-700 hover:text-stone-950">Add Task</button>
+      <button className="text-stone-700 hover:text-stone-950" onClick={handleClick}>
+        Add Task
+      </button>
     </div>
   );
 }
